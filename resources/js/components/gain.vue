@@ -10,7 +10,7 @@
                                 :key="item.id"
                                 class="inner"
                             >
-                                <h3>${{ item.cost | currency }}</h3>
+                                <h3>{{ item.cost }}</h3>
                                 <p>Total en inventario <strong>Neto</strong></p>
                             </div>
                             <div class="icon">

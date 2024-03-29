@@ -246,6 +246,7 @@ class FactureController extends Controller
             ->select(
                 DB::raw('SUM(p.stock) as stock,SUM(p.cost) as cost'),
             )
+            ->where('p.stock', '>', 0)
             ->get();
         return $tot;
     }
