@@ -166,7 +166,7 @@ export default {
                     let url = this.urlincome + "/" + id;
                     let response = axios.delete(url);
                     try {
-                        this.getList();
+                        this.$store.dispatch("Incomeactions", date_now);
                         Swal.fire({
                             title: `${response.data.message}`,
                             icon: "success",

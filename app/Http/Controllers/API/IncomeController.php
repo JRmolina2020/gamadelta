@@ -96,9 +96,11 @@ class IncomeController extends Controller
     {
 
         $income = Income::find($id);
-        $income->delete();
+        if (!$income) {
+            return response()->json(["message" => "Entrada no encontrado"], 404);
+        }
         $this->update_stock($id, 'delete');
-
+        $income->delete();
         return response()->json(["message" => "Entrada eliminada"]);
     }
 }
