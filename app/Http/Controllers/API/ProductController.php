@@ -28,6 +28,22 @@ class ProductController extends Controller
         return $products;
     }
 
+    public function index2()
+    {
+        $products = DB::table('products as p')
+            ->join('categories as c', 'c.id', '=', 'p.categorie_id')
+            ->select(
+                'p.id',
+                'p.name',
+                'p.cost',
+                'c.name as type',
+            )
+            ->orderBy('p.name', 'ASC')
+            ->where('p.stock', 0)
+            ->get();
+        return $products;
+    }
+
 
     public function store(Request $request)
     {

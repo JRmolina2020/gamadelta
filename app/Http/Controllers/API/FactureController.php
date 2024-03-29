@@ -238,6 +238,17 @@ class FactureController extends Controller
             ->get();
         return $gain_tot;
     }
+    //sum inventario product cost
+    public function Totcost()
+    {
+
+        $tot = DB::table('products as p')
+            ->select(
+                DB::raw('SUM(p.stock) as stock,SUM(p.cost) as cost'),
+            )
+            ->get();
+        return $tot;
+    }
     public function userTot($date, $datetwo)
     {
         $user_tot = DB::table('factures as f')

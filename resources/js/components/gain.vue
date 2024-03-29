@@ -4,6 +4,40 @@
             <div class="col-lg-6 col-xs-12 col-sm-12 mt-3">
                 <div class="row">
                     <div class="col-12 col-lg-6">
+                        <div class="small-box bg-warning">
+                            <div
+                                v-for="item in Totcost"
+                                :key="item.id"
+                                class="inner"
+                            >
+                                <h3>${{ item.cost | currency }}</h3>
+                                <p>Total en inventario <strong>Neto</strong></p>
+                            </div>
+                            <div class="icon">
+                                <i class="fi fi-bar-chart"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-6">
+                        <div class="small-box bg-info">
+                            <div
+                                v-for="item in Totcost"
+                                :key="item.id"
+                                class="inner"
+                            >
+                                <h3>${{ item.stock | currency }}</h3>
+                                <p>
+                                    Total en productos <strong>Costo.</strong>
+                                </p>
+                            </div>
+                            <div class="icon">
+                                <i class="fi fi-bar-chart"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12 col-lg-6">
                         <div class="small-box bg-info">
                             <div
                                 v-for="item in gaintotg"
@@ -11,7 +45,7 @@
                                 class="inner"
                             >
                                 <h3>${{ item.gaintot | currency }}</h3>
-                                <p>Total venta</p>
+                                <p>Total venta <strong>General</strong></p>
                             </div>
                             <div class="icon">
                                 <i class="fi fi-bar-chart"></i>
@@ -26,7 +60,7 @@
                                 class="inner"
                             >
                                 <h3>${{ item.gain | currency }}</h3>
-                                <p>Total ganancias</p>
+                                <p>Total ganancias <strong>General</strong></p>
                             </div>
                             <div class="icon">
                                 <i class="fi fi-bar-chart"></i>
@@ -36,7 +70,7 @@
                 </div>
 
                 <div class="alert alert-primary" role="alert">
-                    Resultado de ventas, ganancias y total
+                    Resultado de ventas, ganancias y total individual
                 </div>
                 <div class="input-group">
                     <input
@@ -72,6 +106,26 @@
                         Buscar
                     </button>
                 </div>
+
+                <div
+                    class="alert alert-dark mt-3"
+                    v-for="(item, index) in gaintot"
+                    :key="'b' + index"
+                    role="alert"
+                >
+                    <p>TOTAL VENTA ${{ item.gaintot | currency }}</p>
+                </div>
+
+                <div
+                    class="alert alert-dark mt-3"
+                    v-for="(item, index) in gaintotf"
+                    :key="'b' + index"
+                    role="alert"
+                >
+                    <p v-can="'ver indicador'">
+                        TOT GANANCIA ${{ item.gain | currency }}
+                    </p>
+                </div>
             </div>
             <div class="col-lg-6 col-xs-12 col-sm-12 mt-3">
                 <div class="alert alert-warning" role="alert">
@@ -101,56 +155,7 @@
                         Buscar
                     </button>
                 </div>
-            </div>
-        </div>
 
-        <div class="row mt-3">
-            <div class="col-lg-6 col-12">
-                <div class="form-group">
-                    <input
-                        type="text"
-                        class="form-control form-control-sm"
-                        v-model="filters.name.value"
-                        placeholder="Buscar referencia"
-                    />
-                </div>
-                <div class="table-responsive mt-3">
-                    <VTable
-                        :data="gain"
-                        :filters="filters"
-                        :page-size="10"
-                        :currentPage.sync="currentPage"
-                        @totalPagesChanged="totalPages = $event"
-                        class="table table-dark"
-                    >
-                        <template #head>
-                            <tr>
-                                <VTh sortKey="name">Nombre</VTh>
-                                <th>Cant</th>
-                                <th>Total</th>
-                                <th>Costo</th>
-                                <th>Ganancia</th>
-                            </tr>
-                        </template>
-                        <template #body="{ rows }">
-                            <tr v-for="row in rows" :key="row.name">
-                                <td>{{ row.name }}</td>
-                                <td>{{ row.quantity }}</td>
-                                <td v-can="'ver indicador'">
-                                    {{ row.tot | currency }}
-                                </td>
-                                <td v-can="'ver indicador'">
-                                    {{ row.cost | currency }}
-                                </td>
-                                <td v-can="'ver indicador'">
-                                    {{ row.gain | currency }}
-                                </td>
-                            </tr>
-                        </template>
-                    </VTable>
-                </div>
-            </div>
-            <div class="col-lg-6 col-xs-12 col-sm-12">
                 <table class="table table-dark mt-3">
                     <thead>
                         <tr>
@@ -165,30 +170,36 @@
                         </tr>
                     </tbody>
                 </table>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-lg-3">
-                <div
-                    class="alert alert-dark"
-                    v-for="(item, index) in gaintot"
-                    :key="'b' + index"
-                    role="alert"
-                >
-                    <p>TOTAL VENTA ${{ item.gaintot | currency }}</p>
+                <div class="alert alert-primary mt-3" role="alert">
+                    Productos agotados
                 </div>
-            </div>
-            <div class="col-lg-3">
-                <div
-                    class="alert alert-dark"
-                    v-for="(item, index) in gaintotf"
-                    :key="'b' + index"
-                    role="alert"
-                >
-                    <p v-can="'ver indicador'">
-                        TOT GANANCIA ${{ item.gain | currency }}
-                    </p>
+                <table class="table table-dark mt-3">
+                    <thead>
+                        <tr>
+                            <th scope="col">Producto</th>
+                            <th scope="col">Costo</th>
+                            <th scope="col">Categoria</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr
+                            v-for="(item, index) in productstock"
+                            :key="'u' + index"
+                        >
+                            <td>{{ item.name }}</td>
+                            <td>${{ item.cost | currency }}</td>
+                            <td>{{ item.type }}</td>
+                            <td>
+                                <span class="badge bg-danger">Agotado</span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="alert alert-primary mt-3" role="alert">
+                    Productos con más <strong>rotación</strong>
                 </div>
+                pronto..
             </div>
         </div>
     </div>
@@ -222,8 +233,10 @@ export default {
             "gaintotg",
             "gaintotf",
             "gaintotfg",
+            "Totcost",
             "usertot",
             "categories",
+            "productstock",
         ]),
     },
     created() {
@@ -246,6 +259,8 @@ export default {
             this.$store.dispatch("Gaintotgactions", obj);
             this.$store.dispatch("Gaintotfactions", obj);
             this.$store.dispatch("Gaintotfgactions", obj);
+            this.$store.dispatch("Totcostactions", obj);
+            this.$store.dispatch("Productstockactions", obj);
         },
         getListUser() {
             let obj = {

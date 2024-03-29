@@ -9,6 +9,7 @@ export default new Vuex.Store({
         roles: [],
         permissions: [],
         products: [],
+        productstock: [],
         categories:[],
         clients: [],
         factures: [],
@@ -23,6 +24,7 @@ export default new Vuex.Store({
         gaintotg: [],
         gaintotf: [],
         gaintotfg: [],
+        Totcost:[],
         usertot: [],
         facUnique: [],
         descriptionF: [],
@@ -36,6 +38,7 @@ export default new Vuex.Store({
         urlroles: "/api/roles",
         urlpermissions: "/api/permissions",
         urlproducts: "/api/products",
+        urlproductstock: "/api/productstock",
         urlcategories: "/api/categories",
         urlclients: "/api/clients",
         urlfactures: "/api/factures",
@@ -52,6 +55,7 @@ export default new Vuex.Store({
         urlgaintotg: "/api/gainTotg",
         urlgaintotf: "/api/gainTotf",
         urlgaintotfg: "/api/gainTotfg",
+        urlTotcost: "/api/Totcost",
         urlusertot: "/api/userTot",
         urlcompany: "/api/company",
         urlcompanies: "/api/companies",
@@ -72,6 +76,9 @@ export default new Vuex.Store({
         },
         Productmutations(state, item) {
             state.products = item;
+        },
+        Productstockmutations(state, item) {
+            state.productstock = item;
         },
         Categoriemutations(state, item) {
             state.categories = item;
@@ -123,6 +130,9 @@ export default new Vuex.Store({
         },
         Gaintotfgmutations(state, item) {
             state.gaintotfg = item;
+        },
+        Totcostmutations(state, item) {
+            state.Totcost = item;
         },
        
         Usertotmutations(state, item) {
@@ -179,6 +189,15 @@ export default new Vuex.Store({
             try {
                 let response = await axios.get(state.urlproducts);
                 commit("Productmutations", response.data);
+                state.status = true;
+            } catch (error) {
+                console.log(error);
+            }
+        },
+        async Productstockactions({ commit, state }) {
+            try {
+                let response = await axios.get(state.urlproductstock);
+                commit("Productstockmutations", response.data);
                 state.status = true;
             } catch (error) {
                 console.log(error);
@@ -346,6 +365,18 @@ export default new Vuex.Store({
                     `${state.urlgaintotfg}/${obj.prop1}/${obj.prop2}`
                 );
                 commit("Gaintotfgmutations", response.data);
+               
+                state.status = true;
+            } catch (error) {
+                console.log(error);
+            }
+        },
+        async Totcostactions({ commit, state }, obj) {
+            try {
+                let response = await axios.get(
+                    `${state.urlTotcost}`
+                );
+                commit("Totcostmutations", response.data);
                 console.log(response.data)
                 state.status = true;
             } catch (error) {

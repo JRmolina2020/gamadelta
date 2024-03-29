@@ -112,6 +112,7 @@ Route::group(['middleware' => 'auth'], function () {
             //end
             //products
             Route::get('/products', [ProductController::class, 'index']);
+            Route::get('/productstock', [ProductController::class, 'index2']);
             Route::post('products', [ProductController::class, 'store']);
             Route::put('/products/{id}', [ProductController::class, 'update'])->where('id', '[0-9]+');
             Route::delete('/products/{id}', [ProductController::class, 'destroy']);
@@ -143,6 +144,7 @@ Route::group(['middleware' => 'auth'], function () {
             Route::get('/gainTotg/{date}/{datetwo}', [FactureController::class, 'gainTotg']);
             Route::get('/gainTotf/{date}/{datetwo}/{type}', [FactureController::class, 'gainTotf']);
             Route::get('/gainTotfg/{date}/{datetwo}', [FactureController::class, 'gainTotfg']);
+            Route::get('/Totcost', [FactureController::class, 'Totcost']);
             Route::get('/userTot/{date}/{datetwo}', [FactureController::class, 'userTot']);
             Route::get('/emailfac/{id}', [EmailFac::class, 'sendMailWithPDF'])->where('id', '[0-9]+');
             //

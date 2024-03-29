@@ -159,24 +159,13 @@ export default {
         },
 
         destroy(id) {
+            let url = this.urlincome + "/" + id;
+            let response = axios.delete(url);
+
+            this.getList();
             Swal.fire({
-                title: "Deseas eliminar la entrada?",
-                showCancelButton: true,
-                confirmButtonText: "Si",
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    let url = this.urlincome + "/" + id;
-                    let response = axios.delete(url);
-                    try {
-                        this.getList();
-                        Swal.fire({
-                            title: `${response.data.message}`,
-                            icon: "success",
-                        });
-                    } catch (error) {
-                        console.log(error);
-                    }
-                }
+                title: `${response.data.message}`,
+                icon: "success",
             });
         },
     },
