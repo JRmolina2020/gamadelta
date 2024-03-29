@@ -173,8 +173,10 @@ class FactureController extends Controller
             ->get();
         return $gain;
     }
+    //venta total por categoria
     public function gainTot($date, $datetwo, $type)
     {
+
         $gain_tot = DB::table('facture_details as fd')
             ->join('factures as f', 'f.id', '=', 'fd.facture_id')
             ->join('products as p', 'p.id', '=', 'fd.product_id')
@@ -184,12 +186,28 @@ class FactureController extends Controller
             ->whereBetween('f.date_facture', [$date, $datetwo])
             ->where('status', 1)
             ->where('p.categorie_id', $type)
+
+            ->get();
+        return $gain_tot;
+    }
+    //venta total
+    public function gainTotg($date, $datetwo)
+    {
+
+        $gain_tot = DB::table('facture_details as fd')
+            ->join('factures as f', 'f.id', '=', 'fd.facture_id')
+            ->join('products as p', 'p.id', '=', 'fd.product_id')
+            ->select(
+                DB::raw('SUM(fd.tot) as gaintot'),
+            )
+            ->whereBetween('f.date_facture', [$date, $datetwo])
+            ->where('status', 1)
             ->get();
         return $gain_tot;
     }
 
 
-    //ganancia total 
+    //ganancia total por categoria
     public function gainTotf($date, $datetwo, $type)
     {
 
@@ -202,6 +220,21 @@ class FactureController extends Controller
             ->whereBetween('f.date_facture', [$date, $datetwo])
             ->where('f.status', 1)
             ->where('p.categorie_id', $type)
+            ->get();
+        return $gain_tot;
+    }
+    //ganancia total
+    public function gainTotfg($date, $datetwo)
+    {
+
+        $gain_tot = DB::table('facture_details as fd')
+            ->join('factures as f', 'f.id', '=', 'fd.facture_id')
+            ->join('products as p', 'p.id', '=', 'fd.product_id')
+            ->select(
+                DB::raw('SUM(fd.tot)-SUM(p.cost*fd.quantity) as gain'),
+            )
+            ->whereBetween('f.date_facture', [$date, $datetwo])
+            ->where('f.status', 1)
             ->get();
         return $gain_tot;
     }

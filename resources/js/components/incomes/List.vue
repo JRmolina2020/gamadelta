@@ -20,38 +20,37 @@
                     Buscar
                 </button>
             </div>
-            <VTable :data="income" class="table table-dark mt-3">
-                <template #head>
+            <table class="table">
+                <thead>
                     <tr>
-                        <VTh sortKey="product">Producto</VTh>
-                        <th>Cantidad</th>
-                        <th>Usuario</th>
-                        <th>Fecha</th>
-                        <th>Registro</th>
-                        <th></th>
+                        <th scope="col">Producto</th>
+                        <th scope="col">Cantidad</th>
+                        <th scope="col">Fecha</th>
+                        <th scope="col">Registro</th>
+                        <th scope="col"></th>
                     </tr>
-                </template>
-                <template #body="{ rows }">
-                    <tr v-for="row in rows" :key="row.id">
-                        <td>{{ row.product }}</td>
-                        <td>{{ row.quantity }}</td>
-                        <td>{{ row.user }}</td>
-                        <td>{{ row.date_income }}</td>
-                        <td>{{ row.created_at }}</td>
+                </thead>
+                <tbody>
+                    <tr v-for="item in income" :key="item.id">
+                        <td>{{ item.product }}</td>
+                        <td>{{ item.quantity }}</td>
+                        <td>{{ item.user }}</td>
+                        <td>{{ item.date_income }}</td>
+                        <td>{{ item.created_at }}</td>
 
                         <td>
                             <button
                                 v-can="'eliminar entrada'"
                                 type="button"
-                                @click="destroy(row.id)"
+                                @click="destroy(item.id)"
                                 class="btn bg-danger btn-sm"
                             >
                                 <i class="fi fi-trash"></i>
                             </button>
                         </td>
                     </tr>
-                </template>
-            </VTable>
+                </tbody>
+            </table>
         </div>
 
         <div class="alert alert-primary" role="alert">

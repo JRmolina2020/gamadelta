@@ -63,13 +63,6 @@
                             >
                                 <i class="fi fi-eye"></i>
                             </button>
-                            <button
-                                type="button"
-                                @click="destroy(row.id)"
-                                class="btn bg-danger btn-sm"
-                            >
-                                <i class="fi fi-trash"></i>
-                            </button>
                         </td>
                     </tr>
                 </template>

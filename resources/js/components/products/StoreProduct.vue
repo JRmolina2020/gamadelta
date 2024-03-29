@@ -200,15 +200,6 @@
                     </button>
                 </form>
                 <br />
-                <input v-model="barcodeValue" />
-                <input v-model.number="numbtot" /><br />
-                <div class="row">
-                    <div v-for="item in numbtot" :key="item.id">
-                        <div class="col-4">
-                            <barcode v-bind:value="barcodeValue"> </barcode>
-                        </div>
-                    </div>
-                </div>
             </section>
         </Modal-Resource>
     </div>
@@ -233,8 +224,6 @@ export default {
     },
     data() {
         return {
-            barcodeValue: "",
-            numbtot: 0,
             actions: "Productactions",
             submitted: true,
             send: 1,
@@ -259,7 +248,6 @@ export default {
             this.$store.dispatch("Categorieactions");
         },
         show(row) {
-            this.barcodeValue = row.name;
             this.form.id = row.id;
             this.form.name = row.name;
             this.form.price = parseFloat(row.price);

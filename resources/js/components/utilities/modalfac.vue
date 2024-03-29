@@ -30,7 +30,6 @@
                             />
                         </div>
                         <div id="facture2" ref="pdf">
-                            <h4>BOLSOSVALLEDUPAR</h4>
                             <div
                                 v-for="(item, index) in facUnique"
                                 :key="'gd' + index"

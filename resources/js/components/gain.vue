@@ -2,6 +2,39 @@
     <div>
         <div class="row">
             <div class="col-lg-6 col-xs-12 col-sm-12 mt-3">
+                <div class="row">
+                    <div class="col-12 col-lg-6">
+                        <div class="small-box bg-info">
+                            <div
+                                v-for="item in gaintotg"
+                                :key="item.id"
+                                class="inner"
+                            >
+                                <h3>${{ item.gaintot | currency }}</h3>
+                                <p>Total venta</p>
+                            </div>
+                            <div class="icon">
+                                <i class="fi fi-bar-chart"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-6">
+                        <div class="small-box bg-success">
+                            <div
+                                v-for="item in gaintotfg"
+                                :key="item.id"
+                                class="inner"
+                            >
+                                <h3>${{ item.gain | currency }}</h3>
+                                <p>Total ganancias</p>
+                            </div>
+                            <div class="icon">
+                                <i class="fi fi-bar-chart"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="alert alert-primary" role="alert">
                     Resultado de ventas, ganancias y total
                 </div>
@@ -183,7 +216,15 @@ export default {
         };
     },
     computed: {
-        ...mapState(["gain", "gaintot", "gaintotf", "usertot", "categories"]),
+        ...mapState([
+            "gain",
+            "gaintot",
+            "gaintotg",
+            "gaintotf",
+            "gaintotfg",
+            "usertot",
+            "categories",
+        ]),
     },
     created() {
         this.getList();
@@ -202,7 +243,9 @@ export default {
             };
             this.$store.dispatch("Gainactions", obj);
             this.$store.dispatch("Gaintotactions", obj);
+            this.$store.dispatch("Gaintotgactions", obj);
             this.$store.dispatch("Gaintotfactions", obj);
+            this.$store.dispatch("Gaintotfgactions", obj);
         },
         getListUser() {
             let obj = {
@@ -220,7 +263,9 @@ export default {
             };
             this.$store.dispatch("Gainactions", obj);
             this.$store.dispatch("Gaintotactions", obj);
+            this.$store.dispatch("Gaintotgactions", obj);
             this.$store.dispatch("Gaintotfactions", obj);
+            this.$store.dispatch("Gaintotfgactions", obj);
         },
 
         getDateUser() {

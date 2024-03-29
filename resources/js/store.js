@@ -20,7 +20,9 @@ export default new Vuex.Store({
         gain: [],
         clientot:[],
         gaintot: [],
+        gaintotg: [],
         gaintotf: [],
+        gaintotfg: [],
         usertot: [],
         facUnique: [],
         descriptionF: [],
@@ -47,7 +49,9 @@ export default new Vuex.Store({
         urlgain: "/api/gain",
         urlclientot: "/api/clientot",
         urlgaintot: "/api/gainTot",
+        urlgaintotg: "/api/gainTotg",
         urlgaintotf: "/api/gainTotf",
+        urlgaintotfg: "/api/gainTotfg",
         urlusertot: "/api/userTot",
         urlcompany: "/api/company",
         urlcompanies: "/api/companies",
@@ -111,8 +115,14 @@ export default new Vuex.Store({
         Gaintotmutations(state, item) {
             state.gaintot = item;
         },
+        Gaintotgmutations(state, item) {
+            state.gaintotg = item;
+        },
         Gaintotfmutations(state, item) {
             state.gaintotf = item;
+        },
+        Gaintotfgmutations(state, item) {
+            state.gaintotfg = item;
         },
        
         Usertotmutations(state, item) {
@@ -295,6 +305,18 @@ export default new Vuex.Store({
                 console.log(error);
             }
         },
+        async Gaintotgactions({ commit, state }, obj) {
+            try {
+                let response = await axios.get(
+                    `${state.urlgaintotg}/${obj.prop1}/${obj.prop2}`
+                );
+                commit("Gaintotgmutations", response.data);
+             
+                state.status = true;
+            } catch (error) {
+                console.log(error);
+            }
+        },
         async clientTotactions({ commit, state }, id) {
             try {
                 let response = await axios.get(
@@ -312,6 +334,19 @@ export default new Vuex.Store({
                     `${state.urlgaintotf}/${obj.prop1}/${obj.prop2}/${obj.type}`
                 );
                 commit("Gaintotfmutations", response.data);
+                state.status = true;
+            } catch (error) {
+                console.log(error);
+            }
+        },
+      
+        async Gaintotfgactions({ commit, state }, obj) {
+            try {
+                let response = await axios.get(
+                    `${state.urlgaintotfg}/${obj.prop1}/${obj.prop2}`
+                );
+                commit("Gaintotfgmutations", response.data);
+                console.log(response.data)
                 state.status = true;
             } catch (error) {
                 console.log(error);

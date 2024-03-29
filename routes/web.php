@@ -140,7 +140,9 @@ Route::group(['middleware' => 'auth'], function () {
             Route::get('/gain/{date}/{datetwo}/{type}', [FactureController::class, 'gain']);
             Route::get('/clientot/{id}', [FactureController::class, 'clientTot']);
             Route::get('/gainTot/{date}/{datetwo}/{type}', [FactureController::class, 'gainTot']);
+            Route::get('/gainTotg/{date}/{datetwo}', [FactureController::class, 'gainTotg']);
             Route::get('/gainTotf/{date}/{datetwo}/{type}', [FactureController::class, 'gainTotf']);
+            Route::get('/gainTotfg/{date}/{datetwo}', [FactureController::class, 'gainTotfg']);
             Route::get('/userTot/{date}/{datetwo}', [FactureController::class, 'userTot']);
             Route::get('/emailfac/{id}', [EmailFac::class, 'sendMailWithPDF'])->where('id', '[0-9]+');
             //
