@@ -144,7 +144,6 @@ export default {
     methods: {
         getList() {
             this.$store.dispatch("Incomeactions", date_now);
-            this.getDate();
         },
         getList_two() {
             this.$store.dispatch("Incomeactions", this.dateList);
