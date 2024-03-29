@@ -258,6 +258,7 @@ class FactureController extends Controller
                 DB::raw('u.name,SUM(f.tot) as tot'),
             )
             ->groupBy('u.name')
+            ->where('f.status', 1)
             ->whereBetween('f.date_facture', [$date, $datetwo])
             ->get();
         return $user_tot;
