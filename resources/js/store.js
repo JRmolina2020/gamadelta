@@ -10,6 +10,7 @@ export default new Vuex.Store({
         permissions: [],
         products: [],
         productstock: [],
+        productsr:[],
         categories:[],
         clients: [],
         factures: [],
@@ -39,6 +40,7 @@ export default new Vuex.Store({
         urlpermissions: "/api/permissions",
         urlproducts: "/api/products",
         urlproductstock: "/api/productstock",
+        urlproductsr: "/api/productsr",
         urlcategories: "/api/categories",
         urlclients: "/api/clients",
         urlfactures: "/api/factures",
@@ -79,6 +81,9 @@ export default new Vuex.Store({
         },
         Productstockmutations(state, item) {
             state.productstock = item;
+        },
+        Productrmutations(state, item) {
+            state.productsr = item;
         },
         Categoriemutations(state, item) {
             state.categories = item;
@@ -199,6 +204,17 @@ export default new Vuex.Store({
                 let response = await axios.get(state.urlproductstock);
                 commit("Productstockmutations", response.data);
                 state.status = true;
+              
+            } catch (error) {
+                console.log(error);
+            }
+        },
+        async Productractions({ commit, state }) {
+            try {
+                let response = await axios.get(state.urlproductsr);
+                commit("Productrmutations", response.data);
+                state.status = true;
+                console.log(response)
             } catch (error) {
                 console.log(error);
             }

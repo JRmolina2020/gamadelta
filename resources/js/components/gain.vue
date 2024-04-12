@@ -107,10 +107,61 @@
                     </button>
                 </div>
 
+                <div class="form-group mt-3">
+                    <input
+                        type="text"
+                        class="form-control form-control-sm"
+                        v-model="filters.name.value"
+                        placeholder="Buscar referencia"
+                    />
+                </div>
+                <div class="table-responsive mt-3">
+                    <VTable
+                        :data="gain"
+                        :filters="filters"
+                        :page-size="5"
+                        :currentPage.sync="currentPage2"
+                        @totalPagesChanged="totalPages2 = $event"
+                        class="table table-dark"
+                    >
+                        <template #head>
+                            <tr>
+                                <VTh sortKey="name">Nombre</VTh>
+                                <th>Cant</th>
+                                <th>Total</th>
+                                <th>Costo</th>
+                                <th>Ganancia</th>
+                            </tr>
+                        </template>
+                        <template #body="{ rows }">
+                            <tr v-for="row in rows" :key="row.name">
+                                <td>{{ row.name }}</td>
+                                <td>{{ row.quantity }}</td>
+                                <td v-can="'ver indicador'">
+                                    {{ row.tot | currency }}
+                                </td>
+                                <td v-can="'ver indicador'">
+                                    {{ row.cost | currency }}
+                                </td>
+                                <td v-can="'ver indicador'">
+                                    {{ row.gain | currency }}
+                                </td>
+                            </tr>
+                        </template>
+                    </VTable>
+                    <div class="text-xs-center">
+                        <VTPagination
+                            :currentPage.sync="currentPage2"
+                            :total-pages="totalPages2"
+                            :boundary-links="true"
+                        />
+                    </div>
+                </div>
+
                 <div
                     class="alert alert-dark mt-3"
                     v-for="(item, index) in gaintot"
-                    :key="'b' + index"
+                    :key="'b1' + index"
                     role="alert"
                 >
                     <p>TOTAL VENTA ${{ item.gaintot | currency }}</p>
@@ -173,33 +224,76 @@
                 <div class="alert alert-primary mt-3" role="alert">
                     Productos agotados
                 </div>
-                <table class="table table-dark mt-3">
-                    <thead>
-                        <tr>
-                            <th scope="col">Producto</th>
-                            <th scope="col">Costo</th>
-                            <th scope="col">Categoria</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr
-                            v-for="(item, index) in productstock"
-                            :key="'u' + index"
-                        >
-                            <td>{{ item.name }}</td>
-                            <td>${{ item.cost | currency }}</td>
-                            <td>{{ item.type }}</td>
-                            <td>
-                                <span class="badge bg-danger">Agotado</span>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+                <!-- table products stock 0 -->
+                <div class="table-responsive">
+                    <VTable
+                        :data="productstock"
+                        :page-size="5"
+                        :currentPage.sync="currentPage"
+                        @totalPagesChanged="totalPages = $event"
+                        class="table"
+                    >
+                        <template #head>
+                            <tr>
+                                <VTh sortKey="nit">Nombre</VTh>
+                                <th>Costo</th>
+                                <th>Categoria</th>
+                                <th></th>
+                            </tr>
+                        </template>
+                        <template #body="{ rows }">
+                            <tr v-for="row in rows" :key="row.id">
+                                <td>{{ row.name }}</td>
+                                <td>${{ row.cost | currency }}</td>
+                                <td>{{ row.type }}</td>
+                                <td>
+                                    <span class="badge bg-danger">Agotado</span>
+                                </td>
+                            </tr>
+                        </template>
+                    </VTable>
+                    <div class="text-xs-center">
+                        <VTPagination
+                            :currentPage.sync="currentPage"
+                            :total-pages="totalPages"
+                            :boundary-links="true"
+                        />
+                    </div>
+                </div>
+
+                <!-- end -->
                 <div class="alert alert-primary mt-3" role="alert">
                     Productos con más <strong>rotación</strong>
                 </div>
-                pronto..
+                <div class="table-responsive">
+                    <VTable
+                        :page-size="3"
+                        :currentPage.sync="currentPage3"
+                        @totalPagesChanged="totalPages3 = $event"
+                        class="table"
+                        :data="productsr"
+                    >
+                        <template #head>
+                            <tr>
+                                <th>Nombre</th>
+                                <VTh sortKey="tot">Total</VTh>
+                            </tr>
+                        </template>
+                        <template #body="{ rows }">
+                            <tr v-for="row in rows" :key="row.id">
+                                <td>{{ row.name }}</td>
+                                <td>${{ row.tot | currency }}</td>
+                            </tr>
+                        </template>
+                    </VTable>
+                    <div class="text-xs-center">
+                        <VTPagination
+                            :currentPage.sync="currentPage3"
+                            :total-pages="totalPages3"
+                            :boundary-links="true"
+                        />
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -217,6 +311,10 @@ export default {
             },
             totalPages: 1,
             currentPage: 1,
+            totalPages2: 1,
+            currentPage2: 1,
+            totalPages3: 1,
+            currentPage3: 1,
             date: "",
             datetwo: "",
             dateuser: "",
@@ -237,6 +335,7 @@ export default {
             "usertot",
             "categories",
             "productstock",
+            "productsr",
         ]),
     },
     created() {
@@ -259,8 +358,9 @@ export default {
             this.$store.dispatch("Gaintotgactions", obj);
             this.$store.dispatch("Gaintotfactions", obj);
             this.$store.dispatch("Gaintotfgactions", obj);
-            this.$store.dispatch("Totcostactions", obj);
-            this.$store.dispatch("Productstockactions", obj);
+            this.$store.dispatch("Totcostactions");
+            this.$store.dispatch("Productstockactions");
+            this.$store.dispatch("Productractions");
         },
         getListUser() {
             let obj = {

@@ -24,10 +24,11 @@ class ProductController extends Controller
                 'c.name as type',
                 'c.id as idc',
             )
-            ->orderBy('p.name', 'ASC')->get();
+            ->orderBy('p.stock', 'DESC')->get();
         return $products;
     }
 
+    //LIST PRODUCTS STOCK 0
     public function index2()
     {
         $products = DB::table('products as p')
@@ -42,6 +43,20 @@ class ProductController extends Controller
             ->where('p.stock', 0)
             ->get();
         return $products;
+    }
+    public function index_three()
+    {
+        $products_r = DB::table('factures as f')
+            ->join('facture_details as fd', 'f.id', '=', 'fd.facture_id')
+            ->join('products as p', 'p.id', '=', 'fd.product_id')
+            ->select(
+                DB::raw('p.name,SUM(fd.tot) as tot'),
+            )
+            ->groupBy('p.name')
+            ->where('f.status', 1)
+            ->limit(10)
+            ->get();
+        return $products_r;
     }
 
 

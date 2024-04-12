@@ -527,14 +527,12 @@
                                 class="col-4"
                             >
                                 <div
+                                    v-if="item.stock != 0"
                                     class="card text-white bg-dark mb-3"
                                     style="max-width"
                                     @click="addRow(item, index)"
                                 >
-                                    <div
-                                        v-if="item.stock != 0"
-                                        class="card-body"
-                                    >
+                                    <div class="card-body">
                                         <p>
                                             {{ item.name }}
                                             {{ item.categorie_id }}
@@ -548,6 +546,18 @@
                                         <p v-else class="card-text">
                                             {{ item.price_two | currency }}
                                         </p>
+                                    </div>
+                                </div>
+                                <div
+                                    v-else
+                                    class="card text-white bg-dark mb-3"
+                                    style="max-width"
+                                >
+                                    <div class="card-body">
+                                        {{ item.name }}<br />
+                                        <span class="badge bg-danger"
+                                            >Agotado</span
+                                        >
                                     </div>
                                 </div>
                             </div>

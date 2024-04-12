@@ -113,6 +113,7 @@ Route::group(['middleware' => 'auth'], function () {
             //products
             Route::get('/products', [ProductController::class, 'index']);
             Route::get('/productstock', [ProductController::class, 'index2']);
+            Route::get('/productsr', [ProductController::class, 'index_three']);
             Route::post('products', [ProductController::class, 'store']);
             Route::put('/products/{id}', [ProductController::class, 'update'])->where('id', '[0-9]+');
             Route::delete('/products/{id}', [ProductController::class, 'destroy']);
