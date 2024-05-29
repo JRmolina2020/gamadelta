@@ -13,7 +13,9 @@ export default new Vuex.Store({
         productsr:[],
         categories:[],
         clients: [],
+        provider: [],
         factures: [],
+        factureState:[],
         typeSale: [],
         typeSale_one: [],
         details: [],
@@ -28,7 +30,6 @@ export default new Vuex.Store({
         Totcost:[],
         usertot: [],
         facUnique: [],
-        descriptionF: [],
         company: [],
         money: [],
         moneySingle: [],
@@ -43,12 +44,13 @@ export default new Vuex.Store({
         urlproductsr: "/api/productsr",
         urlcategories: "/api/categories",
         urlclients: "/api/clients",
+        urlprovider: "/api/provider",
         urlfactures: "/api/factures",
+        urlfactureState: "/api/factureState",
         urltype_sale: "/api/type_sale",
         urltype_sale_one: "/api/type_sale_one",
         urldetails: "/api/details",
         urlfactureUnique: "/api/factureUnique",
-        urldescriptionF: "/api/descriptionfac",
         urlbills: "/api/bills",
         urlbillstot: "/api/billsTot",
         urlgain: "/api/gain",
@@ -91,8 +93,14 @@ export default new Vuex.Store({
         Clientmutations(state, item) {
             state.clients = item;
         },
+        Providermutations(state, item) {
+            state.provider = item;
+        },
         Facturemutations(state, item) {
             state.factures = item;
+        },
+        FactureStatemutations(state, item) {
+            state.factureState = item;
         },
         TypeSalemutations(state, item) {
             state.typeSale = item;
@@ -106,9 +114,7 @@ export default new Vuex.Store({
         FactureUniquemutations(state, item) {
             state.facUnique = item;
         },
-        DescriptitonFmutations(state, item) {
-            state.descriptionF = item;
-        },
+    
         Billmutations(state, item) {
             state.bills = item;
         },
@@ -190,9 +196,10 @@ export default new Vuex.Store({
             }
         },
 
-        async Productactions({ commit, state }) {
+        async Productactions({ commit, state },status) {
             try {
-                let response = await axios.get(state.urlproducts);
+                let response = await axios.get(`${state.urlproducts}/${status}`);
+               
                 commit("Productmutations", response.data);
                 state.status = true;
             } catch (error) {
@@ -200,6 +207,7 @@ export default new Vuex.Store({
             }
         },
         async Productstockactions({ commit, state }) {
+          
             try {
                 let response = await axios.get(state.urlproductstock);
                 commit("Productstockmutations", response.data);
@@ -237,6 +245,15 @@ export default new Vuex.Store({
                 console.log(error);
             }
         },
+        async Provideractions({ commit, state }) {
+            try {
+                let response = await axios.get(state.urlprovider);
+                commit("Providermutations", response.data);
+                state.status = true;
+            } catch (error) {
+                console.log(error);
+            }
+        },
         async Factureactions({ commit, state }, date) {
             try {
                 let response = await axios.get(`${state.urlfactures}/${date}`);
@@ -246,17 +263,18 @@ export default new Vuex.Store({
                 console.log(error);
             }
         },
-        async DescriptionFactions({ commit, state }, date) {
+        async FactureStateactions({ commit, state }, obj) {
             try {
                 let response = await axios.get(
-                    `${state.urldescriptionF}/${date}`
+                    `${state.urlfactureState}/${obj.prop1}/${obj.prop2}`
                 );
-                commit("DescriptitonFmutations", response.data);
+                commit("FactureStatemutations", response.data);
                 state.status = true;
             } catch (error) {
                 console.log(error);
             }
         },
+      
         async TypeSaleactions({ commit, state }, date) {
             try {
                 let response = await axios.get(`${state.urltype_sale}/${date}`);

@@ -64,10 +64,18 @@ Vue.component(
     "client_example",
     require("./components/clients/ClientExample.vue").default
 );
+Vue.component(
+    "provider_example",
+    require("./components/provider/ProviderExample.vue").default
+);
 
 Vue.component(
     "facture_example",
     require("./components/factures/FactureExample.vue").default
+);
+Vue.component(
+    "fstate_example",
+    require("./components/factures/FstateExample.vue").default
 );
 Vue.component("Role", require("./components/roles/RoleExample.vue").default);
 Vue.component(
@@ -98,10 +106,7 @@ Vue.component(
     "inventory_example",
     require("./components/inventory.vue").default
 );
-Vue.component(
-    "sales_example",
-    require("./components/descriptionF.vue").default
-);
+
 
 Vue.component(
     "updatefacture_example",

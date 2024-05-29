@@ -53,16 +53,16 @@ Route::group(['middleware' => 'auth'], function () {
         return view('clients.index');
     });
     Route::get('/proveedores', function () {
-        return view('providers.index');
+        return view('provider.index');
     });
     Route::get('/facturas', function () {
         return view('factures.index');
     });
+    Route::get('/fstate', function () {
+        return view('factures.facture_state');
+    });
     Route::get('/fupdate', function () {
         return view('factures.update');
-    });
-    Route::get('/ventas', function () {
-        return view('sales.index');
     });
     Route::get('/gastos', function () {
         return view('bills.index');
@@ -111,13 +111,13 @@ Route::group(['middleware' => 'auth'], function () {
             Route::delete('/permissions/{id}', [PermissionController::class, 'destroy']);
             //end
             //products
-            Route::get('/products', [ProductController::class, 'index']);
+            Route::get('/products/{status}', [ProductController::class, 'index'])->where('id', '[0-9]+');
             Route::get('/productstock', [ProductController::class, 'index2']);
             Route::get('/productsr', [ProductController::class, 'index_three']);
             Route::post('products', [ProductController::class, 'store']);
             Route::put('/products/{id}', [ProductController::class, 'update'])->where('id', '[0-9]+');
-            Route::delete('/products/{id}', [ProductController::class, 'destroy']);
-            //end
+            Route::put('products/available/{id}', [ProductController::class, 'available'])->where('id', '[0-9]+');
+            Route::put('products/locked/{id}', [ProductController::class, 'locked'])->where('id', '[0-9]+');
             //categories
             Route::get('/categories', [CategorieController::class, 'index']);
             Route::post('categories', [CategorieController::class, 'store']);
@@ -132,7 +132,7 @@ Route::group(['middleware' => 'auth'], function () {
             //facture
             Route::post('factures', [FactureController::class, 'store']);
             Route::get('/factures/{date}', [FactureController::class, 'index']);
-            Route::get('/descriptionfac/{date}', [FactureController::class, 'descriptionFacture']);
+            Route::get('/factureState/{date}/{datetwo}', [FactureController::class, 'index_state']);
             Route::get('/factureUnique/{id}', [FactureController::class, 'factureUnique'])->where('id', '[0-9]+');
             Route::get('/type_sale/{date}', [FactureController::class, 'type_sale']);
             Route::get('/type_sale_one/{date}/{type}', [FactureController::class, 'type_sale_one']);
@@ -178,10 +178,9 @@ Route::group(['middleware' => 'auth'], function () {
             Route::get('/incometwo/{date}/{datetwo}', [IncomeController::class, 'indexDatatwo']);
             Route::delete('/income/{id}', [IncomeController::class, 'destroy'])->where('id', '[0-9]+');
             //providers
-            Route::get('/providers', [ProviderController::class, 'index']);
-            Route::post('providers', [ProviderController::class, 'store']);
-            // Route::put('/clients/{id}', [ClientController::class, 'update'])->where('id', '[0-9]+');
-            // Route::delete('/clients/{id}', [ClientController::class, 'destroy'])->where('id', '[0-9]+');
+            Route::get('/provider', [ProviderController::class, 'index']);
+            Route::post('provider', [ProviderController::class, 'store']);
+            Route::put('/provider/{id}', [ProviderController::class, 'update'])->where('id', '[0-9]+');
         });
     });
 });

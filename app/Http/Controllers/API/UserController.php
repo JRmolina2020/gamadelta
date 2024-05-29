@@ -13,18 +13,19 @@ class UserController extends Controller
     public function index()
     {
         $users = User::with('roles:id,name')
-        ->orderBy('id', 'desc')
-        ->get();
+            ->orderBy('id', 'desc')
+            ->where('status', '1')
+            ->get();
         return response()->json($users);
     }
- 
+
     // add users
     public function store(Request $request)
     {
         $user = User::create([
             'name' => $request['name'],
             'email' => $request['email'],
-            'password'=> bcrypt('password')
+            'password' => bcrypt('password')
 
         ]);
         $user->assignRole($request['rol']);
@@ -48,7 +49,7 @@ class UserController extends Controller
         $users->save();
         return response()->json(["message" => "Ha sido activado"]);
     }
-      
+
     public function locked($id)
     {
         $users = User::findOrFail($id, ['id']);
@@ -56,14 +57,14 @@ class UserController extends Controller
         $users->save();
         return response()->json(["message" => "Ha sido Bloqueado"]);
     }
-    
+
     public function updatePassword($id)
     {
         $user = User::find($id, ['id']);
         $user->fill([
             'password' => bcrypt(request('password')),
         ])->save();
-        
+
         return response()->json(['message' => 'El password ha sido cambiado'], 201);
     }
 }

@@ -147,7 +147,7 @@ export default {
             this.clear();
         },
         getProduct() {
-            this.$store.dispatch("Productactions");
+            this.$store.dispatch("Productactions", 1);
         },
         add() {
             this.$validator.validate().then((valid) => {

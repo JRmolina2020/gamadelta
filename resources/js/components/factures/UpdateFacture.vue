@@ -95,6 +95,26 @@
                             </select>
                         </div>
                     </div>
+                    <div class="col-lg-4 col-6">
+                        <div class="form-group">
+                            <label>Cliente</label>
+                            <v-select
+                                :options="clients"
+                                v-model="form.client_id"
+                                :reduce="(clients) => clients.id"
+                                label="fullname"
+                            >
+                                <template #search="{ attributes, events }">
+                                    <input
+                                        class="vs__search"
+                                        :required="!form.client_id"
+                                        v-bind="attributes"
+                                        v-on="events"
+                                    />
+                                </template>
+                            </v-select>
+                        </div>
+                    </div>
                 </div>
 
                 <button
@@ -142,6 +162,7 @@
                         <th>O</th>
                         <th>Banco</th>
                         <th>Vendedor</th>
+                        <th>Cliente</th>
                         <th>E</th>
                     </tr>
                 </template>
@@ -156,6 +177,7 @@
                         </td>
                         <td v-else>{{ row.type_sale }}</td>
                         <td>{{ row.name }}</td>
+                        <td>{{ row.fullname }}</td>
 
                         <td>
                             <button
@@ -192,6 +214,7 @@ export default {
                 efecty: 0,
                 type_sale: 0,
                 user_id: null,
+                client_id: null,
                 tot: 0,
             },
             filters: {
@@ -200,7 +223,7 @@ export default {
         };
     },
     computed: {
-        ...mapState(["factures", "moneySingle", "users"]),
+        ...mapState(["factures", "moneySingle", "users", "clients"]),
     },
     created() {
         this.getList();
@@ -212,6 +235,7 @@ export default {
             this.form.other = parseFloat(row.other);
             this.form.tot = parseFloat(row.tot);
             this.form.user_id = row.idu;
+            this.form.client_id = row.idc;
             this.form.type_sale = row.type_sale;
             this.send = true;
             this.update = true;
@@ -252,6 +276,7 @@ export default {
             this.$store.dispatch("Factureactions", date_now);
             this.$store.dispatch("MoneySigleactions");
             this.$store.dispatch("Useractions");
+            this.$store.dispatch("Clientactions");
         },
         equalsTot() {
             this.form.other = this.form.tot - this.form.efecty;

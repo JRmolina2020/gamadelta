@@ -23,7 +23,7 @@
             <section slot="body">
                 <form
                     method="POST"
-                    @submit.enter.prevent="add(form.id, actions, urlproducts)"
+                    @submit.enter.prevent="add(form.id, urlproducts)"
                     autocomplete="off"
                     onKeyPress="if(event.keyCode == 13) event.returnValue = false;"
                 >
@@ -86,6 +86,7 @@
                             <div class="form-group">
                                 <label for>Precio mayorista</label>
                                 <currency-input
+                                    @change="typePrice()"
                                     v-validate="'|required|min_value:0'"
                                     class="form-control form-control-sm"
                                     v-currency="{
@@ -96,10 +97,10 @@
                                     :class="{
                                         'is-invalid':
                                             submitted &&
-                                            errors.has('precio mayorista'),
+                                            errors.has('precio mayorista1'),
                                     }"
-                                    v-model.number="form.price"
-                                    name="precio de compra"
+                                    v-model.number="form.priceSv"
+                                    name="precio mayorista"
                                 />
                                 <div
                                     v-if="
@@ -112,10 +113,12 @@
                                 </div>
                             </div>
                         </div>
+
                         <div class="col-lg-6 col-12">
                             <div class="form-group">
                                 <label for>Precio de venta</label>
                                 <currency-input
+                                    @change="typePrice()"
                                     v-validate="{
                                         min_value: 0,
                                     }"
@@ -130,7 +133,7 @@
                                             submitted &&
                                             errors.has('precio de venta'),
                                     }"
-                                    v-model.number="form.price_two"
+                                    v-model.number="form.price_twoSv"
                                     name="precio de venta"
                                 />
                                 <div
@@ -164,6 +167,68 @@
                                         />
                                     </template>
                                 </v-select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-2 col-12">
+                            <select
+                                v-model="form.type_iva"
+                                @change="typePrice()"
+                            >
+                                <option value="F">Sin iva</option>
+                                <option value="V">19%</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-lg-6 col-6">
+                            <div class="form-group">
+                                <label for>Valor iva mayorista</label>
+                                <input
+                                    class="form-control form-control-sm"
+                                    type="number"
+                                    disabled
+                                    v-model.number="form.vm"
+                                />
+                            </div>
+                        </div>
+
+                        <div class="col-lg-6 col-6">
+                            <div class="form-group">
+                                <label for>Valor iva detal</label>
+                                <input
+                                    class="form-control form-control-sm"
+                                    type="number"
+                                    disabled
+                                    v-model.number="form.vd"
+                                />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-lg-6 col-6">
+                            <div class="form-group">
+                                <label for>PM F</label>
+                                <input
+                                    class="form-control form-control-sm"
+                                    type="number"
+                                    v-model.number="form.price"
+                                    disabled
+                                />
+                            </div>
+                        </div>
+
+                        <div class="col-lg-6 col-6">
+                            <div class="form-group">
+                                <label for>PV F</label>
+                                <input
+                                    class="form-control form-control-sm"
+                                    type="number"
+                                    disabled
+                                    v-model.number="form.price_two"
+                                />
                             </div>
                         </div>
                     </div>
@@ -224,7 +289,6 @@ export default {
     },
     data() {
         return {
-            actions: "Productactions",
             submitted: true,
             send: 1,
             price_default: 1000,
@@ -232,20 +296,88 @@ export default {
                 id: null,
                 name: "",
                 price: 0,
+                priceSv: 0, //porcentaje de iva venta al mayor
                 price_two: 0,
+                price_twoSv: 0, //porcentaje de iva venta detal
+                type_iva: "F",
+                //ver valor
+                vd: 0,
+                vm: 0,
                 cost: 0,
                 categorie_id: null,
             },
         };
     },
 
-    mixins: [add],
     created() {
         this.getCategorie();
     },
     methods: {
+        add(id, url) {
+            this.$validator.validate().then((valid) => {
+                if (valid) {
+                    this.route(id, url);
+                }
+            });
+        },
+        async route(id, url) {
+            this.send = false;
+            if (id) {
+                let response = await axios.put(url + "/" + id, this.form);
+                try {
+                    this.$store.dispatch("Productactions", 1);
+                    Swal.fire({
+                        position: "center",
+                        icon: "success",
+                        title: `${response.data.message}`,
+                        showConfirmButton: false,
+                        timer: 1500,
+                    });
+                    $("#model").modal("hide");
+                    this.clear();
+                } catch (error) {
+                    console.log(error.response);
+                }
+            } else {
+                let response = await axios.post(url, this.form);
+
+                try {
+                    Swal.fire({
+                        position: "center",
+                        icon: "success",
+                        title: `${response.data.message}`,
+                        showConfirmButton: false,
+                        timer: 1600,
+                    });
+
+                    $("#model").modal("hide");
+                    this.$store.dispatch("Productactions", 1);
+                } catch (error) {
+                    console.log(error.response);
+                }
+            }
+        },
         getCategorie() {
             this.$store.dispatch("Categorieactions");
+        },
+        typePrice() {
+            if (this.form.type_iva == "F") {
+                this.form.vm = 0;
+                this.form.vd = 0;
+                this.form.price = this.form.priceSv;
+                this.form.price_two = this.form.price_twoSv;
+            } else {
+                //precio al mayor
+                let porcentajeSv1 = this.form.priceSv * (19 / 100);
+                //precio de venta
+                let porcentajeSv2 = this.form.price_twoSv * (19 / 100);
+                //agregando el porcentaje al input
+                this.form.vm = porcentajeSv1;
+                this.form.vd = porcentajeSv2;
+                //agregando la suma a inputs de precio final
+                this.form.price = this.form.priceSv + porcentajeSv1;
+                this.form.price_two = this.form.price_twoSv + porcentajeSv2;
+            }
         },
         show(row) {
             this.form.id = row.id;
@@ -261,6 +393,8 @@ export default {
             this.form.id = null;
             this.form.name = null;
             this.form.price = 0;
+            this.form.priceSv = 0;
+            this.price_twoSv = 0;
             this.form.price_two = 0;
             this.form.cost = 0;
             this.form.categorie_id = null;
@@ -270,3 +404,8 @@ export default {
     },
 };
 </script>
+<style>
+.div-1 {
+    background-color: #ebebeb;
+}
+</style>

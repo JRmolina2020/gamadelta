@@ -101,16 +101,10 @@
                         </td>
                         <td v-else>{{ row.type_sale }}</td>
                         <th>{{ row.name }}</th>
-                        <td v-if="row.status">
+                        <td>
                             <span class="badge badge-success">Pagado</span>
                         </td>
-                        <td v-else>
-                            <span
-                                @click="statusModified(row.id)"
-                                class="badge badge-danger"
-                                >Deuda</span
-                            >
-                        </td>
+
                         <td>
                             <Modal-Ticket v-bind:cod="row.id"></Modal-Ticket>
                         </td>
@@ -145,6 +139,7 @@
                     :currentPage.sync="currentPage"
                     :total-pages="totalPages"
                     :boundary-links="true"
+                    :maxPageLinks="4"
                 />
             </div>
         </div>
@@ -285,19 +280,6 @@ export default {
                     prop2: this.search_sale,
                 };
                 this.$store.dispatch("TypeSale_one_actions", obj);
-            }
-        },
-        async statusModified(id) {
-            let url = this.urlfactures + "/" + id;
-            let response = await axios.put(url);
-            try {
-                this.getList();
-                Swal.fire({
-                    title: `${response.data.message}`,
-                    icon: "success",
-                });
-            } catch (error) {
-                console.log(error);
             }
         },
 

@@ -60,11 +60,19 @@
       </a>
     </li>
     <li class="nav-item">
+      <a href="{{ url('fstate') }}" class="nav-link">
+        <i class="fi fi-shopify"></i>
+        <p>Facturas pendiente</p>
+      </a>
+    </li>
+    @hasrole('administrador')
+    <li class="nav-item">
       <a href="{{ url('fupdate') }}" class="nav-link">
         <i class="fi fi-shopify"></i>
         <p>Moficar factura</p>
       </a>
     </li>
+    @endrole
     @hasrole('administrador')
     <li class="nav-item">
       <a href="{{ url('cuentas') }}" class="nav-link">
@@ -86,12 +94,7 @@
         <p>Inventario</p>
       </a>
     </li>
-    <li class="nav-item">
-      <a href="{{ url('ventas') }}" class="nav-link">
-        <i class="fi fi-curve"></i>
-        <p>Ventas detalladas</p>
-      </a>
-    </li>
+
 
     @hasrole('administrador')
     <li class="nav-item">

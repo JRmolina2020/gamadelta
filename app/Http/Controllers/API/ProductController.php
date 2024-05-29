@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\DB;
 class ProductController extends Controller
 {
 
-    public function index()
+    public function index($status)
     {
         $products = DB::table('products as p')
             ->join('categories as c', 'c.id', '=', 'p.categorie_id')
@@ -21,9 +21,11 @@ class ProductController extends Controller
                 'p.price_two',
                 'p.cost',
                 'p.stock',
+                'p.status',
                 'c.name as type',
                 'c.id as idc',
             )
+            ->where('p.status', $status)
             ->orderBy('p.stock', 'DESC')->get();
         return $products;
     }
@@ -41,9 +43,11 @@ class ProductController extends Controller
             )
             ->orderBy('p.name', 'ASC')
             ->where('p.stock', 0)
+            ->where('p.status', 1)
             ->get();
         return $products;
     }
+    //producto con más rotación
     public function index_three()
     {
         $products_r = DB::table('factures as f')
@@ -53,7 +57,9 @@ class ProductController extends Controller
                 DB::raw('p.name,SUM(fd.tot) as tot'),
             )
             ->groupBy('p.name')
+            ->orderBy('tot', 'DESC')
             ->where('f.status', 1)
+            ->where('p.status', 1)
             ->limit(10)
             ->get();
         return $products_r;
@@ -85,13 +91,19 @@ class ProductController extends Controller
         ])->save();
         return response()->json(['message' => 'El producto ha sido modificado'], 201);
     }
-    public function destroy($id)
+    public function available($id)
     {
-        $product = Product::find($id);
-        if (!$product) {
-            return response()->json(["message" => "Producto no encontrado"], 404);
-        }
-        $product->delete();
-        return response()->json(["message" => "Producto eliminado"]);
+        $products = Product::find($id, ['id']);
+        $products->status = 1;
+        $products->save();
+        return response()->json(["message" => "Ha sido activado"]);
+    }
+    public function locked($id)
+    {
+        $products = Product::find($id, ['id']);
+        $products->status = 0;
+        $products->stock = 0;
+        $products->save();
+        return response()->json(["message" => "Ha sido Bloqueado"]);
     }
 }

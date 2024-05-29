@@ -75,6 +75,28 @@ class FactureController extends Controller
                 'c.id as idc'
             )
             ->where('f.date_facture', $date)
+            ->where('f.status', '=', '1')
+            ->orderBy('f.id', 'desc')->get();
+        return $facture;
+    }
+    public function index_state($date, $datetwo)
+    {
+        $facture = DB::table('factures as f')
+            ->join('clients as c', 'c.id', '=', 'f.client_id')
+            ->join('users as u', 'u.id', '=', 'f.user_id')
+            ->select(
+                'f.id',
+                'f.date_facture',
+                'f.tot',
+                'f.efecty',
+                'f.other',
+                'f.note',
+                'f.status',
+                'f.type_sale',
+                'u.name',
+            )
+            ->whereBetween('f.date_facture', [$date, $datetwo])
+            ->where('f.status', '=', '0')
             ->orderBy('f.id', 'desc')->get();
         return $facture;
     }
@@ -168,7 +190,7 @@ class FactureController extends Controller
             )
             ->groupBy('p.name', 'p.cost', 'p.id')
             ->whereBetween('f.date_facture', [$date, $datetwo])
-            ->where('status', 1)
+            ->where('f.status', 1)
             ->where('p.categorie_id', $type)
             ->get();
         return $gain;
@@ -184,7 +206,7 @@ class FactureController extends Controller
                 DB::raw('SUM(fd.tot) as gaintot'),
             )
             ->whereBetween('f.date_facture', [$date, $datetwo])
-            ->where('status', 1)
+            ->where('f.status', 1)
             ->where('p.categorie_id', $type)
 
             ->get();
@@ -201,7 +223,7 @@ class FactureController extends Controller
                 DB::raw('SUM(fd.tot) as gaintot'),
             )
             ->whereBetween('f.date_facture', [$date, $datetwo])
-            ->where('status', 1)
+            ->where('f.status', 1)
             ->get();
         return $gain_tot;
     }
@@ -219,6 +241,7 @@ class FactureController extends Controller
             )
             ->whereBetween('f.date_facture', [$date, $datetwo])
             ->where('f.status', 1)
+            ->where('p.status', 1)
             ->where('p.categorie_id', $type)
             ->get();
         return $gain_tot;
@@ -235,6 +258,7 @@ class FactureController extends Controller
             )
             ->whereBetween('f.date_facture', [$date, $datetwo])
             ->where('f.status', 1)
+            ->where('p.status', 1)
             ->get();
         return $gain_tot;
     }
@@ -244,9 +268,10 @@ class FactureController extends Controller
 
         $tot = DB::table('products as p')
             ->select(
-                DB::raw('SUM(p.stock) as stock,SUM(p.cost) as cost'),
+                DB::raw('SUM(p.stock) as stock,SUM(p.cost*p.stock) as cost'),
             )
             ->where('p.stock', '>', 0)
+            ->where('p.status', 1)
             ->get();
         return $tot;
     }
@@ -271,24 +296,6 @@ class FactureController extends Controller
         $facture->save();
         return response()->json(["message" => "El estado ha cambiado a pagado"]);
     }
-    public function descriptionFacture($date)
-    {
-        $gain = DB::table('factures as f')
-            ->join('facture_details as fd', 'f.id', '=', 'fd.facture_id')
-            ->join('products as p', 'p.id', '=', 'fd.product_id')
-            ->select(
-                'f.id',
-                'p.name as product',
-                'fd.quantity',
-                'fd.tot',
-                DB::raw('fd.tot/fd.quantity as price'),
-                'f.created_at'
-            )
-            ->where('f.date_facture', $date)
-            ->where('f.status', 1)
-            ->get();
-        return $gain;
-    }
     public function destroy($id)
     {
         $facture = Facture::find($id);
@@ -307,6 +314,7 @@ class FactureController extends Controller
             'efecty' => request('efecty'),
             'type_sale' => request('type_sale'),
             'user_id' => request('user_id'),
+            'client_id' => request('client_id'),
 
         ])->save();
         return response()->json(['message' => 'La factura ha sido modificada'], 201);

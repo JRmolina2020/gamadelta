@@ -38,9 +38,10 @@ module.exports = {
                         showConfirmButton: false,
                         timer: 1600,
                     });
-
+                    console.log(response)
                     $("#model").modal("hide");
                     this.$store.dispatch(actions);
+                    this.clear();
                 } catch (error) {
                     console.log(error.response);
                 }

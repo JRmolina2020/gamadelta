@@ -206,22 +206,24 @@
                         </select>
                     </div>
                 </div>
-                <div class="col-6 col-lg-2">
+                <div class="col-lg-4 col-6">
                     <div class="form-group">
-                        <label for>Clientes</label>
-                        <select
-                            class="form-control form-control-sm"
+                        <label>Cliente</label>
+                        <v-select
+                            :options="clients"
                             v-model="formFacture.client_id"
-                            required
+                            :reduce="(clients) => clients.id"
+                            label="fullname"
                         >
-                            <option
-                                v-for="(item, index) in clients"
-                                :value="item.id"
-                                :key="index"
-                            >
-                                {{ item.fullname }}
-                            </option>
-                        </select>
+                            <template #search="{ attributes, events }">
+                                <input
+                                    class="vs__search"
+                                    :required="!formFacture.client_id"
+                                    v-bind="attributes"
+                                    v-on="events"
+                                />
+                            </template>
+                        </v-select>
                     </div>
                 </div>
                 <div class="col-6 col-lg-2">
@@ -268,18 +270,6 @@
                                 locale: 'en',
                             }"
                         />
-                    </div>
-                </div>
-                <div class="col-6 col-lg-2">
-                    <div class="form-group">
-                        <label for="status">Estado</label>
-                        <select
-                            class="form-control form-control-sm"
-                            v-model="formFacture.status"
-                        >
-                            <option value="1">Pagado</option>
-                            <option value="0">Pendiente</option>
-                        </select>
                     </div>
                 </div>
             </div>
@@ -358,6 +348,18 @@
                     </div>
                 </div>
                 <div v-else></div>
+                <div class="col-6 col-lg-2">
+                    <div class="form-group">
+                        <label for="status">Estado</label>
+                        <select
+                            class="form-control form-control-sm"
+                            v-model="formFacture.status"
+                        >
+                            <option value="1">Pagado</option>
+                            <option value="0">Pendiente</option>
+                        </select>
+                    </div>
+                </div>
             </div>
             <div class="row">
                 <div class="col-lg-12">
@@ -527,7 +529,19 @@
                                 class="col-4"
                             >
                                 <div
-                                    v-if="item.stock != 0"
+                                    v-if="item.stock <= 0"
+                                    class="card text-white bg-dark mb-3"
+                                    style="max-width"
+                                >
+                                    <div class="card-body">
+                                        {{ item.name }}<br />
+                                        <span class="badge bg-danger"
+                                            >Agotado</span
+                                        >
+                                    </div>
+                                </div>
+                                <div
+                                    v-else
                                     class="card text-white bg-dark mb-3"
                                     style="max-width"
                                     @click="addRow(item, index)"
@@ -546,18 +560,6 @@
                                         <p v-else class="card-text">
                                             {{ item.price_two | currency }}
                                         </p>
-                                    </div>
-                                </div>
-                                <div
-                                    v-else
-                                    class="card text-white bg-dark mb-3"
-                                    style="max-width"
-                                >
-                                    <div class="card-body">
-                                        {{ item.name }}<br />
-                                        <span class="badge bg-danger"
-                                            >Agotado</span
-                                        >
                                     </div>
                                 </div>
                             </div>
@@ -704,7 +706,7 @@ export default {
 
                 this.getList();
                 this.clear();
-                this.$store.dispatch("Productactions");
+                this.$store.dispatch("Productactions", 1);
                 this.send = true;
             } catch (error) {
                 console.log(error.response);
@@ -712,7 +714,7 @@ export default {
         },
         getData() {
             this.$store.dispatch("Clientactions");
-            this.$store.dispatch("Productactions");
+            this.$store.dispatch("Productactions", 1);
         },
         async addProduct() {
             this.sendproduct = false;
@@ -725,7 +727,7 @@ export default {
                     showConfirmButton: false,
                     timer: 1000,
                 });
-                this.$store.dispatch("Productactions");
+                this.$store.dispatch("Productactions", 1);
                 this.product.name = "";
                 this.product.price = 0;
                 this.divproduct = false;

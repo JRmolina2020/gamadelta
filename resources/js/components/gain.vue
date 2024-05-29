@@ -1,5 +1,8 @@
 <template>
     <div>
+        <meta charset="utf-8" />
+        <div><br /></div>
+
         <div class="row">
             <div class="col-lg-6 col-xs-12 col-sm-12 mt-3">
                 <div class="row">
@@ -25,7 +28,8 @@
                                 :key="item.id"
                                 class="inner"
                             >
-                                <h3>{{ item.stock }}</h3>
+                                <h3 v-if="item.stock > 0">{{ item.stock }}</h3>
+                                <h3 v-else>0</h3>
                                 <p>
                                     Total en productos <strong>Cantidad</strong>
                                 </p>
@@ -154,6 +158,7 @@
                             :currentPage.sync="currentPage2"
                             :total-pages="totalPages2"
                             :boundary-links="true"
+                            :maxPageLinks="5"
                         />
                     </div>
                 </div>
@@ -257,6 +262,7 @@
                             :currentPage.sync="currentPage"
                             :total-pages="totalPages"
                             :boundary-links="true"
+                            :maxPageLinks="2"
                         />
                     </div>
                 </div>

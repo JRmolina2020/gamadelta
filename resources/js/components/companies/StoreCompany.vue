@@ -1,7 +1,8 @@
 <template>
     <div>
-        <section v-if="view == 1">
+        <section>
             <form
+                v-if="view"
                 method="POST"
                 @submit.enter.prevent="add(form.id, actions, urlcompany)"
                 autocomplete="off"
@@ -214,12 +215,15 @@ export default {
         ...mapState(["urlcompany", "company"]),
     },
     created() {
-        this.validate();
+        if (this.company.length == 0) {
+            this.view = 1;
+        } else {
+            this.view = 0;
+        }
     },
     data() {
         return {
             actions: "Companyactions",
-
             submitted: true,
             send: true,
             view: 1,
@@ -237,13 +241,6 @@ export default {
     },
     mixins: [add],
     methods: {
-        validate() {
-            if (this.company.length == 0) {
-                this.view = 0;
-            } else {
-                this.view = 1;
-            }
-        },
         show(row) {
             this.view = 1;
             this.form.id = row.id;
